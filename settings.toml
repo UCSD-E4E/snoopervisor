@@ -1,0 +1,14 @@
+[users]
+ignore = [
+    "systemd-resolve"
+]
+
+[watchers.cpu]
+enabled = true
+threshold = 50
+schedule = "*/5 * * * *"
+
+[watchers.memory]
+enabled = true
+threshold = 200000000
+schedule = "* * * * *"
