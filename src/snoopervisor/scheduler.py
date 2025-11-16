@@ -107,7 +107,7 @@ class Scheduler:
             current_usage = current_exceeded[user]
             previous_usage = previous_exceeded[user]
 
-            if current_usage > previous_usage + (previous_usage * 0.1):
+            if abs(current_usage - previous_usage) > (previous_usage * 0.1):
                 self.__notify(
                     watcher_name,
                     user,
