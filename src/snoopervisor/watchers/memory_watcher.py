@@ -1,3 +1,5 @@
+"""Watches Memory usage per username."""
+
 from typing import Dict
 
 import psutil
@@ -19,6 +21,7 @@ class MemoryWatcher(Watcher):
         super().__init__(__name__)
 
     def watch(self) -> Dict[str, float]:
+        # pylint: disable=R0801
         self.logger.info("Watching Memory usage...")
 
         pids = psutil.pids()
@@ -35,9 +38,11 @@ class MemoryWatcher(Watcher):
                 memory_usage_by_username[username] = 0.0
 
             memory_info = process.memory_info()
+
+            # Measured in bytes.
             memory_usage_by_username[username] += memory_info.rss  # Resident Set Size
 
-        self.logger.info(f"Memory usage by username: {memory_usage_by_username}")
+        self.logger.info("Memory usage by username: %s", memory_usage_by_username)
 
         threshold_exceeded = {
             username: usage
@@ -46,7 +51,9 @@ class MemoryWatcher(Watcher):
         }
 
         self.logger.warning(
-            f"Users exceeding Memory threshold of {settings.watchers.memory.threshold} bytes: {threshold_exceeded}"
+            "Users exceeding Memory threshold of %s bytes: %s",
+            settings.watchers.memory.threshold,
+            threshold_exceeded,
         )
 
         return threshold_exceeded

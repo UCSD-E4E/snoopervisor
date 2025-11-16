@@ -1,3 +1,5 @@
+"""Configuration management for Snoopervisor."""
+
 from croniter import croniter
 from dynaconf import Dynaconf, Validator
 
@@ -27,7 +29,7 @@ validators = [
         "watchers.cpu.schedule",
         must_exist=True,
         is_type_of=str,
-        condition=lambda v: croniter.is_valid(v),
+        condition=croniter.is_valid,
         when=Validator("watchers.cpu.enabled", eq=True),
     ),
     Validator("watchers.memory.enabled", must_exist=True, is_type_of=bool),
@@ -41,7 +43,7 @@ validators = [
         "watchers.memory.schedule",
         must_exist=True,
         is_type_of=str,
-        condition=lambda v: croniter.is_valid(v),
+        condition=croniter.is_valid,
         when=Validator("watchers.memory.enabled", eq=True),
     ),
 ]

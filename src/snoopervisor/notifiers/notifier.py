@@ -1,3 +1,5 @@
+"""Abstract base class for notifiers."""
+
 import logging
 from abc import ABC, abstractmethod
 from logging import Logger
@@ -5,8 +7,13 @@ from typing import Callable
 
 
 class Notifier(ABC):
+    """Abstract base class for notifiers."""
+
+    # pylint: disable=too-few-public-methods, too-many-arguments, too-many-positional-arguments
+
     @property
     def logger(self) -> Logger:
+        """Returns the logger instance for the notifier."""
         return self.__logger
 
     def __init__(self, logger_name: str):
@@ -22,4 +29,5 @@ class Notifier(ABC):
         unit: str,
         formatter: Callable[[float], float],
     ):
+        """Sends a notification."""
         raise NotImplementedError("Subclasses must implement this method")

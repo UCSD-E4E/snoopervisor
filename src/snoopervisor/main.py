@@ -1,3 +1,5 @@
+"""Main entry point for Snoopervisor."""
+
 import logging
 
 from snoopervisor.scheduler import Scheduler
@@ -21,8 +23,12 @@ def __create_logger(name: str) -> logging.Logger:
 
 
 def main():
+    """Main entry point for Snoopervisor."""
+
     logger = __create_logger("snoopervisor")
     logger.info("Starting Snoopervisor...")
 
     scheduler = Scheduler()
+
+    # This is blocking.
     scheduler.start()

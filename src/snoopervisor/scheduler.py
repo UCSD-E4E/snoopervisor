@@ -1,3 +1,5 @@
+"""Scheduler for running watchers and sending notifications."""
+
 import logging
 from datetime import datetime, timedelta
 from time import sleep
@@ -14,10 +16,14 @@ from snoopervisor.watchers.watcher import Watcher
 
 
 def noop_formatter(usage: float) -> float:
+    """No operation formatter, returns the usage as is."""
     return usage
 
 
 class Scheduler:
+    # pylint: disable=too-few-public-methods, too-many-positional-arguments, too-many-arguments
+    """Scheduler for running watchers and sending notifications."""
+
     def __init__(self):
         self.__logger = logging.getLogger(__name__)
         self.__ignore_users = settings.users.ignore or set()
@@ -90,8 +96,11 @@ class Scheduler:
         unit: str,
         formatter: Callable[[float], float],
     ):
+        # Users from the current group who were not in the previous group are new
         new_users = current_exceeded.keys() - previous_exceeded.keys()
+        # Users from the previous group who are not in the current group have finished
         finished_users = previous_exceeded.keys() - current_exceeded.keys()
+        # Users who are in both groups have continued
         continued_users = current_exceeded.keys() & previous_exceeded.keys()
 
         for user in continued_users:
@@ -131,6 +140,7 @@ class Scheduler:
             )
 
     def start(self):
+        """Starts the scheduler loop."""
         self.__logger.info("Scheduler started.")
 
         watchers = self.__watchers
@@ -142,8 +152,10 @@ class Scheduler:
             for schedule, watcher, unit, formatter in watchers:
                 if pycron.is_now(schedule):
                     self.__logger.info(
-                        f"Schedule matched for {watcher.__class__.__name__} at "
-                        + f"{start_run_time} with schedule '{schedule}'"
+                        "Schedule matched for %s at %s with schedule '%s'",
+                        watcher.__class__.__name__,
+                        start_run_time,
+                        schedule,
                     )
                     exceeded_threshold = watcher.watch()
                     exceeded_threshold = {

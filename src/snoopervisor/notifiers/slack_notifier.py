@@ -1,3 +1,5 @@
+"""Slack notifier implementation."""
+
 from typing import Callable
 
 from slack_sdk import WebClient
@@ -7,7 +9,9 @@ from snoopervisor.notifiers.notifier import Notifier
 
 
 class SlackNotifier(Notifier):
-    # pylint: disable=too-few-public-methods
+    """Sends notifications to a Slack channel."""
+
+    # pylint: disable=too-few-public-methods, too-many-arguments, too-many-positional-arguments
 
     def __init__(self):
         super().__init__(__name__)
@@ -23,6 +27,7 @@ class SlackNotifier(Notifier):
         unit: str,
         formatter: Callable[[float], float],
     ):
+        """Sends a notification to Slack."""
         message = f"Watcher: {watcher_name}\nUser: {user}\n"
 
         if previous_usage is not None:
@@ -35,7 +40,7 @@ class SlackNotifier(Notifier):
         else:
             message += "Current Usage: N/A\n"
 
-        self.logger.info(f"Sending Slack notification:\n{message}")
+        self.logger.info("Sending Slack notification:\n%s", message)
 
         self.__client.chat_postMessage(
             channel=settings.notifiers.slack.channel, text=message
