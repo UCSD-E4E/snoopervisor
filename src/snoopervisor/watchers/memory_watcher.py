@@ -12,6 +12,9 @@ def memory_watcher_formatter(usage_in_bytes: float) -> float:
 
 
 class MemoryWatcher(Watcher):
+    # pylint: disable=too-few-public-methods
+    """Watches Memory usage per username."""
+
     def __init__(self):
         super().__init__(__name__)
 

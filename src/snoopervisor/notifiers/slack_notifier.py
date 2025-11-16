@@ -7,6 +7,8 @@ from snoopervisor.notifiers.notifier import Notifier
 
 
 class SlackNotifier(Notifier):
+    # pylint: disable=too-few-public-methods
+
     def __init__(self):
         super().__init__(__name__)
 

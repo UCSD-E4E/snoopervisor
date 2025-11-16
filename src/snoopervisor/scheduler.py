@@ -142,7 +142,8 @@ class Scheduler:
             for schedule, watcher, unit, formatter in watchers:
                 if pycron.is_now(schedule):
                     self.__logger.info(
-                        f"Schedule matched for {watcher.__class__.__name__} at {start_run_time} with schedule '{schedule}'"
+                        f"Schedule matched for {watcher.__class__.__name__} at "
+                        + f"{start_run_time} with schedule '{schedule}'"
                     )
                     exceeded_threshold = watcher.watch()
                     exceeded_threshold = {
