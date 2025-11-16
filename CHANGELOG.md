@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.1.1 (2025-11-16)
+
+### Bug Fixes
+
+- Report reduced usages in addition to increased usages
+  ([`06a9190`](https://github.com/UCSD-E4E/snoopervisor/commit/06a91900cb70edd4d9253da921ead5a5d1403699))
+
+
 ## v1.1.0 (2025-11-16)
 
 ### Chores
