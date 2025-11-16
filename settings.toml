@@ -4,6 +4,14 @@ ignore = [
     "systemd-resolve",
     "systemd-oom",
     "systemd-timesync",
+    "messagebus",
+    "polkitd",
+    "nvidia-persistenced",
+    "syslog",
+    "avahi",
+    "xrdp",
+    "rtkit",
+    "sshd"
 ]
 
 [watchers.cpu]
