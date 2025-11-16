@@ -3,6 +3,19 @@ from dynaconf import Dynaconf, Validator
 
 validators = [
     Validator("users.ignore", must_exist=True, is_type_of=list),
+    Validator("notifiers.slack.enabled", must_exist=True, is_type_of=bool),
+    Validator(
+        "notifiers.slack.token",
+        must_exist=True,
+        is_type_of=str,
+        when=Validator("notifiers.slack.enabled", eq=True),
+    ),
+    Validator(
+        "notifiers.slack.channel",
+        must_exist=True,
+        is_type_of=str,
+        when=Validator("notifiers.slack.enabled", eq=True),
+    ),
     Validator("watchers.cpu.enabled", must_exist=True, is_type_of=bool),
     Validator(
         "watchers.cpu.threshold",

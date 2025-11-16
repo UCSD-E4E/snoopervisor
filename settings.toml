@@ -1,6 +1,9 @@
 [users]
 ignore = [
-    "systemd-resolve"
+    "root",
+    "systemd-resolve",
+    "systemd-oom",
+    "systemd-timesync",
 ]
 
 [watchers.cpu]

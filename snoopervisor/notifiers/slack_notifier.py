@@ -1,13 +1,18 @@
 from typing import Callable
 
-from snoopervisor.reporters.reporter import Reporter
+from slack_sdk import WebClient
+
+from snoopervisor.config import settings
+from snoopervisor.notifiers.notifier import Notifier
 
 
-class SlackReporter(Reporter):
+class SlackNotifier(Notifier):
     def __init__(self):
         super().__init__(__name__)
 
-    def report(
+        self.__client = WebClient(token=settings.notifiers.slack.token)
+
+    def notify(
         self,
         watcher_name: str,
         user: str,
@@ -29,4 +34,7 @@ class SlackReporter(Reporter):
             message += "Current Usage: N/A\n"
 
         self.logger.info(f"Sending Slack notification:\n{message}")
-        # Here you would add the actual code to send the message to Slack
+
+        self.__client.chat_postMessage(
+            channel=settings.notifiers.slack.channel, text=message
+        )

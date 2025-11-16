@@ -4,7 +4,7 @@ from logging import Logger
 from typing import Callable
 
 
-class Reporter(ABC):
+class Notifier(ABC):
     @property
     def logger(self) -> Logger:
         return self.__logger
@@ -13,7 +13,7 @@ class Reporter(ABC):
         self.__logger = logging.getLogger(logger_name)
 
     @abstractmethod
-    def report(
+    def notify(
         self,
         watcher_name: str,
         user: str,

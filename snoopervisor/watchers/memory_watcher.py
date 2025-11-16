@@ -8,7 +8,7 @@ from snoopervisor.watchers.watcher import Watcher
 
 def memory_watcher_formatter(usage_in_bytes: float) -> float:
     """Convert memory usage from bytes to gigabytes."""
-    return usage_in_bytes / (1024**3)
+    return round(usage_in_bytes / (1024**3), 2)
 
 
 class MemoryWatcher(Watcher):

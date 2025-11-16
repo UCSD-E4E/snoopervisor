@@ -6,6 +6,8 @@ from typing import Callable, Dict, List, Tuple
 import pycron
 
 from snoopervisor.config import settings
+from snoopervisor.notifiers.notifier import Notifier
+from snoopervisor.notifiers.slack_notifier import SlackNotifier
 from snoopervisor.watchers.cpu_watcher import CPUWatcher
 from snoopervisor.watchers.memory_watcher import MemoryWatcher, memory_watcher_formatter
 from snoopervisor.watchers.watcher import Watcher
@@ -20,8 +22,25 @@ class Scheduler:
         self.__logger = logging.getLogger(__name__)
         self.__ignore_users = settings.users.ignore or set()
 
-    def __get_watchers(self) -> List[Tuple[str, Watcher]]:
-        watchers: List[Tuple[str, Watcher]] = []
+        self.__notifiers = self.__get_notifiers()
+        self.__watchers = self.__get_watchers()
+
+    def __get_notifiers(
+        self,
+    ) -> List[Notifier]:
+        notifiers: List[Notifier] = []
+
+        if settings.notifiers.slack.enabled:
+            self.__logger.debug("Adding SlackNotifier to scheduler.")
+
+            notifiers.append(SlackNotifier())
+
+        return notifiers
+
+    def __get_watchers(
+        self,
+    ) -> List[Tuple[str, Watcher, str, Callable[[float], float]]]:
+        watchers: List[Tuple[str, Watcher, str, Callable[[float], float]]] = []
 
         if settings.watchers.cpu.enabled:
             self.__logger.debug("Adding CPUWatcher to scheduler.")
@@ -44,7 +63,7 @@ class Scheduler:
 
         return watchers
 
-    def __report(
+    def __notify(
         self,
         watcher_name: str,
         user: str,
@@ -53,9 +72,17 @@ class Scheduler:
         unit: str,
         formatter: Callable[[float], float],
     ):
-        pass
+        for notifier in self.__notifiers:
+            notifier.notify(
+                watcher_name,
+                user,
+                previous_usage,
+                current_usage,
+                unit,
+                formatter,
+            )
 
-    def __report_for_users(
+    def __notify_for_users(
         self,
         previous_exceeded: Dict[str, float],
         current_exceeded: Dict[str, float],
@@ -72,7 +99,7 @@ class Scheduler:
             previous_usage = previous_exceeded[user]
 
             if current_usage > previous_usage + (previous_usage * 0.1):
-                self.__report(
+                self.__notify(
                     watcher_name,
                     user,
                     previous_usage,
@@ -83,7 +110,7 @@ class Scheduler:
 
         for user in new_users:
             current_usage = current_exceeded[user]
-            self.__report(
+            self.__notify(
                 watcher_name,
                 user,
                 None,
@@ -94,7 +121,7 @@ class Scheduler:
 
         for user in finished_users:
             previous_usage = previous_exceeded[user]
-            self.__report(
+            self.__notify(
                 watcher_name,
                 user,
                 previous_usage,
@@ -106,7 +133,7 @@ class Scheduler:
     def start(self):
         self.__logger.info("Scheduler started.")
 
-        watchers = self.__get_watchers()
+        watchers = self.__watchers
         previous_exceeded_threshold: Dict[str, Dict[str, float]] = {}
 
         while True:
@@ -128,7 +155,7 @@ class Scheduler:
                     if watcher_name not in previous_exceeded_threshold:
                         previous_exceeded_threshold[watcher_name] = {}
 
-                    self.__report_for_users(
+                    self.__notify_for_users(
                         previous_exceeded_threshold[watcher_name],
                         exceeded_threshold,
                         watcher_name,
