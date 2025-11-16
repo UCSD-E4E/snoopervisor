@@ -1,6 +1,6 @@
 [project]
 name = "snoopervisor"
-version = "0.1.0"
+version = "1.0.0"
 description = "This is a service for watching users on a machine and reporting when they exceed resource usage thresholds."
 readme = "README.md"
 requires-python = ">=3.10"
