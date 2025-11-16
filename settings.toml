@@ -13,5 +13,5 @@ schedule = "*/5 * * * *"
 
 [watchers.memory]
 enabled = true
-threshold = 200000000
+threshold = 2147483648
 schedule = "* * * * *"
